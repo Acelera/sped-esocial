@@ -1,3 +1,5 @@
+![image](https://cdn2.hubspot.net/hubfs/3802133/ESOCIAL-2.png)
+
 # e-Social
 **API PHP para a integração de aplicativo com o projeto [SPED eSocial](http://www.esocial.gov.br/) do Ministério do Trabalho, Receita Federal e Caixa Economica Federal**
 
