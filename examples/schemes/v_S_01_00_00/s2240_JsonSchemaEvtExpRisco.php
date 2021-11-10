@@ -154,7 +154,7 @@ $jsonSchema = '{
                                 "maximum": 2
                             },
                             "eficepi": {
-                                "required": true,
+                                "required": false,
                                 "type": "string",
                                 "pattern": "^(S|N)$"
                             },
