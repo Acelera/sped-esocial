@@ -523,42 +523,42 @@ trait TraitS2240
                     }
                 }
 
-                if ($ag->epcepi->epiCompl) {                    
+                if ($ag->epcepi->epicompl) {                    
                     $epiCompl = $this->dom->createElement("epiCompl");
                     $this->dom->addChild(
                         $epiCompl,
                         "medProtecao",
-                        $ag->epcepi->epiCompl->medprotecao,
+                        $ag->epcepi->epicompl->medprotecao,
                         true
                     );
                     $this->dom->addChild(
                         $epiCompl,
                         "condFuncto",
-                        $ag->epcepi->epiCompl->condfuncto,
+                        $ag->epcepi->epicompl->condfuncto,
                         true
                     );
                     $this->dom->addChild(
                         $epiCompl,
                         "usoInint",
-                        $ag->epcepi->epiCompl->usoinint,
+                        $ag->epcepi->epicompl->usoinint,
                         true
                     );
                     $this->dom->addChild(
                         $epiCompl,
                         "przValid",
-                        $ag->epcepi->epiCompl->przvalid,
+                        $ag->epcepi->epicompl->przvalid,
                         true
                     );
                     $this->dom->addChild(
                         $epiCompl,
                         "periodicTroca",
-                        $ag->epcepi->epiCompl->periodictroca,
+                        $ag->epcepi->epicompl->periodictroca,
                         true
                     );
                     $this->dom->addChild(
                         $epiCompl,
                         "higienizacao",
-                        $ag->epcepi->epiCompl->higienizacao,
+                        $ag->epcepi->epicompl->higienizacao,
                         true
                     );
                     $epcEpi->appendChild($epiCompl);
