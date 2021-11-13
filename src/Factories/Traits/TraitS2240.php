@@ -520,46 +520,48 @@ trait TraitS2240
                             false
                         );
                         $epcEpi->appendChild($epi);
-
-                        $epiCompl = $this->dom->createElement("epiCompl");
-                        $this->dom->addChild(
-                            $epiCompl,
-                            "medProtecao",
-                            $e->medprotecao,
-                            true
-                        );
-                        $this->dom->addChild(
-                            $epiCompl,
-                            "condFuncto",
-                            $e->condfuncto,
-                            true
-                        );
-                        $this->dom->addChild(
-                            $epiCompl,
-                            "usoInint",
-                            $e->usoinint,
-                            true
-                        );
-                        $this->dom->addChild(
-                            $epiCompl,
-                            "przValid",
-                            $e->przvalid,
-                            true
-                        );
-                        $this->dom->addChild(
-                            $epiCompl,
-                            "periodicTroca",
-                            $e->periodictroca,
-                            true
-                        );
-                        $this->dom->addChild(
-                            $epiCompl,
-                            "higienizacao",
-                            $e->higienizacao,
-                            true
-                        );
-                        $epcEpi->appendChild($epiCompl);
                     }
+                }
+
+                if ($ag->epcepi->epiCompl) {                    
+                    $epiCompl = $this->dom->createElement("epiCompl");
+                    $this->dom->addChild(
+                        $epiCompl,
+                        "medProtecao",
+                        $ag->epcepi->epiCompl->medprotecao,
+                        true
+                    );
+                    $this->dom->addChild(
+                        $epiCompl,
+                        "condFuncto",
+                        $ag->epcepi->epiCompl->condfuncto,
+                        true
+                    );
+                    $this->dom->addChild(
+                        $epiCompl,
+                        "usoInint",
+                        $ag->epcepi->epiCompl->usoinint,
+                        true
+                    );
+                    $this->dom->addChild(
+                        $epiCompl,
+                        "przValid",
+                        $ag->epcepi->epiCompl->przvalid,
+                        true
+                    );
+                    $this->dom->addChild(
+                        $epiCompl,
+                        "periodicTroca",
+                        $ag->epcepi->epiCompl->periodictroca,
+                        true
+                    );
+                    $this->dom->addChild(
+                        $epiCompl,
+                        "higienizacao",
+                        $ag->epcepi->epiCompl->higienizacao,
+                        true
+                    );
+                    $epcEpi->appendChild($epiCompl);
                 }
                 $agNoc->appendChild($epcEpi);
             }
