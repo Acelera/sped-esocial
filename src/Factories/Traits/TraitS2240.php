@@ -507,18 +507,21 @@ trait TraitS2240
                 if (!empty($ag->epcepi->epi)) {
                     foreach ($ag->epcepi->epi as $e) {
                         $epi = $this->dom->createElement("epi");
-                        $this->dom->addChild(
-                            $epi,
-                            "docAval",
-                            isset($e->docaval) ? $e->docaval : null,
-                            false
-                        );
-                        $this->dom->addChild(
-                            $epi,
-                            "dscEPI",
-                            isset($e->dscepi) ? $e->dscepi : null,
-                            false
-                        );
+                        if(isset($e->docaval)) {
+                            $this->dom->addChild(
+                                $epi,
+                                "docAval",
+                                isset($e->docaval) ? $e->docaval : null,
+                                false
+                            );
+                        } else {
+                            $this->dom->addChild(
+                                $epi,
+                                "dscEPI",
+                                isset($e->dscepi) ? $e->dscepi : null,
+                                false
+                            );
+                        }
                         $epcEpi->appendChild($epi);
                     }
                 }
