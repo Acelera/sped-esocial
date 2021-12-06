@@ -30,6 +30,11 @@ $jsonSchema = '{
             "minimum": 1,
             "maximum": 2
         },
+        "nrrecibo": {
+            "required": false,
+            "type": ["string","null"],
+            "$ref": "#/definitions/recibo"
+        },
         "idevinculo": {
             "required": true,
             "type": "object",
@@ -140,7 +145,7 @@ $jsonSchema = '{
                             "maxLength": 2
                         }
                     }
-                }  
+                }
             },
             "respmonit": {
                 "required": true,
@@ -207,7 +212,7 @@ $std->exmedocup->respmonit->cpfresp = '12345678901';
 $std->exmedocup->respmonit->nmresp= 'Fulano de Tal';
 $std->exmedocup->respmonit->nrcrm = '12345678';
 $std->exmedocup->respmonit->ufcrm = 'AC';
-    
+
 // Schema must be decoded before it can be used for validation
 $jsonSchemaObject = json_decode($jsonSchema);
 if (empty($jsonSchemaObject)) {
