@@ -21,6 +21,12 @@ trait TraitS2220
         );
         $this->dom->addChild(
             $ideEvento,
+            "nrRecibo",
+            !empty($this->std->nrrecibo) ? $this->std->nrrecibo : null,
+            false
+        );
+        $this->dom->addChild(
+            $ideEvento,
             "tpAmb",
             $this->tpAmb,
             true
@@ -325,7 +331,7 @@ trait TraitS2220
         $exMedOcup->appendChild($monit);
         $this->node->appendChild($exMedOcup);
     }
-    
+
     /**
      * builder for version S.1.0.0
      */
@@ -340,6 +346,12 @@ trait TraitS2220
             "indRetif",
             $this->std->indretif,
             true
+        );
+        $this->dom->addChild(
+            $ideEvento,
+            "nrRecibo",
+            !empty($this->std->nrrecibo) ? $this->std->nrrecibo : null,
+            false
         );
         $this->dom->addChild(
             $ideEvento,
@@ -374,7 +386,7 @@ trait TraitS2220
             false
         );
         $this->node->appendChild($ideVinculo);
-        
+
         $exMedOcup = $this->dom->createElement("exMedOcup");
         $this->dom->addChild(
             $exMedOcup,
@@ -483,10 +495,10 @@ trait TraitS2220
         );
         $exMedOcup->appendChild($monit);
         $this->node->appendChild($exMedOcup);
-        
+
         //finalização do xml
         $this->eSocial->appendChild($this->node);
-        
+
         //$this->xml = $this->dom->saveXML($this->eSocial);
         $this->sign();
     }
