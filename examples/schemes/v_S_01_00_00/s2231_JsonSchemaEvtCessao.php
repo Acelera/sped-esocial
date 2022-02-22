@@ -9,14 +9,13 @@ use JsonSchema\Constraints\Factory;
 use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 
-//S-1298 sem alterações da 2.4.1 => 2.4.2
-//S-1298 sem alterações da 2.4.2 => 2.5.0
+//S-2231 versão inicial S_01_00_00
 
-$evento = 'evtReabreEvPer';
+$evento = 'evtCessao';
 $version = 'S_01_00_00';
 
 $jsonSchema = '{
-    "title": "evtReabreEvPer",
+    "title": "evtCessao",
     "type": "object",
     "properties": {
         "sequencial": {
@@ -25,31 +24,80 @@ $jsonSchema = '{
             "minimum": 1,
             "maximum": 99999
         },
-        "indapuracao": {
+        "indretif": {
             "required": true,
             "type": "integer",
             "minimum": 1,
             "maximum": 2
         },
-        "indguia": {
+        "nrrecibo": {
             "required": false,
-            "type": ["integer","null"],
-            "minimum": 1,
-            "maximum": 1
+            "type": ["string","null"],
+            "$ref": "#/definitions/recibo"
         },
-        "perapur": {
+        "cpftrab": {
             "required": true,
             "type": "string",
-            "$ref": "#/definitions/periodo"
+            "pattern": "^[0-9]{11}$"
+        },
+        "matricula": {
+            "required": false,
+            "type": ["string","null"],
+            "minLength": 1,
+            "maxLength": 30
+        },
+        "inicessao": {
+            "required": false,
+            "type": "object",
+            "properties": {
+                "dtinicessao": {
+                    "required": true,
+                    "type": "string",
+                    "$ref": "#/definitions/data"
+                },
+                "cnpjcess": {
+                    "required": true,
+                    "type": "string",
+                    "pattern": "^[0-9]{14}$"
+                },
+                "respremun": {
+                    "required": true,
+                    "type": "string",
+                    "pattern": "^(S|N)$"
+                }
+            }
+        },
+        "fimcessao": {
+            "required": false,
+            "type": "object",
+            "properties": {
+                "dttermcessao": {
+                    "required": true,
+                    "type": "string",
+                    "$ref": "#/definitions/data"
+                }
+            }
         }
     }
 }';
 
 $std = new \stdClass();
 //$std->sequencial = 1; //Opcional
-$std->indapuracao = 2; //Obrigatório 
-$std->indguia = 1; //Opcional
-$std->perapur = '2017-08'; //Obrigatório 
+$std->indretif = 1; //Obrigatório
+$std->nrrecibo = '1.1.1234567890123456789'; //Obrigatório APENAS se indretif = 2
+
+$std->cpftrab = '11111111111'; //Obrigatório
+$std->matricula = '11111111111'; //Obrigatório
+
+//Informações da cessão/exercício em outro órgão
+$std->inicessao = new \stdClass(); //Opcional
+$std->inicessao->dtinicessao = '2017-08-21'; //Obrigatório
+$std->inicessao->cnpjcess = '12345678901234'; //Obrigatório
+$std->inicessao->respremun = 'N'; //Obrigatório
+
+//Informação de término da cessão/exercício em outro órgão.
+$std->fimcessao = new \stdClass(); //Opcional
+$std->fimcessao->dttermcessao = '2019-08-21'; //Obrigatório
 
 // Schema must be decoded before it can be used for validation
 $jsonSchemaObject = json_decode($jsonSchema);

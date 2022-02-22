@@ -1333,14 +1333,12 @@ trait TraitS2200
                 ! empty($end->complemento) ? $end->complemento : null,
                 false
             );
-            if (! empty($end->bairro)) {
-                $this->dom->addChild(
-                    $brasil,
-                    "bairro",
-                    $end->bairro,
-                    true
-                );
-            }
+            $this->dom->addChild(
+                $brasil,
+                "bairro",
+                !empty($end->bairro) ? $end->bairro : null,
+                false
+            );
             $this->dom->addChild(
                 $brasil,
                 "cep",
@@ -1471,8 +1469,8 @@ trait TraitS2200
             $this->dom->addChild(
                 $deficiencia,
                 "infoCota",
-                $def->infocota,
-                true
+                !empty($def->infocota) ? $def->infocota : null,
+                false
             );
             $this->dom->addChild(
                 $deficiencia,
@@ -1610,6 +1608,7 @@ trait TraitS2200
                 $std->indadmissao,
                 true
             );
+            // Processo judicial obrigatorio e exclusivo quando indadmissao = 3
             if (! empty($std->nrproctrab)) {
                 $this->dom->addChild(
                     $celetista,
@@ -1618,12 +1617,12 @@ trait TraitS2200
                     true
                 );
             }
-            $this->dom->addChild(
-                $celetista,
-                "tpRegJor",
-                $std->tpregjor,
-                true
-            );
+             $this->dom->addChild(
+                 $celetista,
+                 "tpRegJor",
+                 $std->tpregjor,
+                 true
+             );
             $this->dom->addChild(
                 $celetista,
                 "natAtividade",
@@ -1735,7 +1734,7 @@ trait TraitS2200
             $this->dom->addChild(
                 $estatutario,
                 "tpPlanRP",
-                ! empty($std->tpplanrp) ? $std->tpplanrp : null,
+                isset($std->tpplanrp) ? $std->tpplanrp : null, //pode ser ZERO
                 false
             );
             $this->dom->addChild(
@@ -1805,54 +1804,58 @@ trait TraitS2200
             $std->codcateg,
             true
         );
-        //remuneracao (obrigatorio)
-        $remuneracao = $this->dom->createElement("remuneracao");
-        $this->dom->addChild(
-            $remuneracao,
-            "vrSalFx",
-            $std->vrsalfx,
-            true
-        );
-        $this->dom->addChild(
-            $remuneracao,
-            "undSalFixo",
-            $std->undsalfixo,
-            true
-        );
-        $this->dom->addChild(
-            $remuneracao,
-            "dscSalVar",
-            ! empty($std->dscsalvar) ? $std->dscsalvar : null,
-            false
-        );
-        $contrato->appendChild($remuneracao);
-        //duracao (obrigatorio)
-        $duracao = $this->dom->createElement("duracao");
-        $this->dom->addChild(
-            $duracao,
-            "tpContr",
-            $std->tpcontr,
-            true
-        );
-        $this->dom->addChild(
-            $duracao,
-            "dtTerm",
-            ! empty($std->dtterm) ? $std->dtterm : null,
-            false
-        );
-        $this->dom->addChild(
-            $duracao,
-            "clauAssec",
-            ! empty($std->clauassec) ? $std->clauassec : null,
-            false
-        );
-        $this->dom->addChild(
-            $duracao,
-            "objDet",
-            ! empty($std->objdet) ? $std->objdet : null,
-            false
-        );
-        $contrato->appendChild($duracao);
+        if ($std->remuneracao) {
+            $rem = $std->remuneracao;
+            $remuneracao = $this->dom->createElement("remuneracao");
+            $this->dom->addChild(
+                $remuneracao,
+                "vrSalFx",
+                $rem->vrsalfx,
+                true
+            );
+            $this->dom->addChild(
+                $remuneracao,
+                "undSalFixo",
+                $rem->undsalfixo,
+                true
+            );
+            $this->dom->addChild(
+                $remuneracao,
+                "dscSalVar",
+                ! empty($rem->dscsalvar) ? $rem->dscsalvar : null,
+                false
+            );
+            $contrato->appendChild($remuneracao);
+        }
+        if ($std->duracao) {
+            $dur = $std->duracao;
+            $duracao = $this->dom->createElement("duracao");
+            $this->dom->addChild(
+                $duracao,
+                "tpContr",
+                $dur->tpcontr,
+                true
+            );
+            $this->dom->addChild(
+                $duracao,
+                "dtTerm",
+                ! empty($dur->dtterm) ? $dur->dtterm : null,
+                false
+            );
+            $this->dom->addChild(
+                $duracao,
+                "clauAssec",
+                ! empty($dur->clauassec) ? $dur->clauassec : null,
+                false
+            );
+            $this->dom->addChild(
+                $duracao,
+                "objDet",
+                ! empty($dur->objdet) ? $dur->objdet : null,
+                false
+            );
+            $contrato->appendChild($duracao);
+        }
         //localTrabalho (obrigatorio)
         $localTrabalho = $this->dom->createElement("localTrabalho");
         //localTrabGeral (opcional)

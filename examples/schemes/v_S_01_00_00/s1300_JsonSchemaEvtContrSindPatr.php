@@ -13,7 +13,7 @@ use JsonSchema\Validator;
 //S-1300 sem alterações da 2.4.2 => 2.5.0
 
 $evento = 'evtContrSindPatr';
-$version = '02_05_00';
+$version = 'S_01_00_00';
 
 $jsonSchema = '{
     "title": "evtContrSindPatr",
@@ -45,7 +45,7 @@ $jsonSchema = '{
         "perapur": {
             "required": true,
             "type": "string",
-            "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])([-](0?[1-9]|1[0-2]))?$"
+            "$ref": "#/definitions/periodo"
         },
         "contribsind": {
             "required": true,

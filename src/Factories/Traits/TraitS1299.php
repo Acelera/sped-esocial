@@ -115,12 +115,18 @@ trait TraitS1299
             ! empty($this->std->infofech->compsemmovto) ? $this->std->infofech->compsemmovto : null,
             false
         );
+        $this->dom->addChild(
+            $infoFech,
+            "indExcApur1250",
+            (($fech->indexcapur1250 ?? null) == 'S') ? $fech->indexcapur1250 : null, //aceita somente S
+            false
+        );
         $this->node->appendChild($infoFech);
         $this->eSocial->appendChild($this->node);
         //$this->xml = $this->dom->saveXML($this->eSocial);
         $this->sign();
     }
-    
+
     /**
      * builder for version S.1.0.0
      */
@@ -145,7 +151,7 @@ trait TraitS1299
         $this->dom->addChild(
             $ideEvento,
             "indGuia",
-            $this->std->indguia,
+            !empty($this->std->indguia) ? $this->std->indguia : null,
             false
         );
         $this->dom->addChild(
@@ -197,7 +203,13 @@ trait TraitS1299
         $this->dom->addChild(
             $infoFech,
             "indExcApur1250",
-            ($fech->indexcapur1250 == 'S') ? $fech->indexcapur1250 : null, //aceita somente S
+            (($fech->indexcapur1250 ?? null) == 'S') ? $fech->indexcapur1250 : null, //aceita somente S
+            false
+        );
+        $this->dom->addChild(
+            $infoFech,
+            "transDCTFWeb",
+            (($fech->transdctfweb ?? null) == 'S') ? $fech->transdctfweb : null, //aceita somente S
             false
         );
         $this->node->appendChild($infoFech);

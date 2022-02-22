@@ -19,8 +19,8 @@ $jsonSchema = '{
     "type": "object",
     "properties": {
         "sequencial": {
-            "required": true,
-            "type": "integer",
+            "required": false,
+            "type": ["integer","null"],
             "minimum": 1,
             "maximum": 99999
         },
@@ -33,7 +33,7 @@ $jsonSchema = '{
         "nrrecibo": {
             "required": false,
             "type": ["string","null"],
-            "pattern": "^[1]{1}\.[0-9]{1}\.[0-9]{19}$"
+            "$ref": "#/definitions/recibo"
         },
         "cpftrab": {
             "required": true,
@@ -53,12 +53,12 @@ $jsonSchema = '{
         "dtdeslig": {
             "required": true,
             "type": "string",
-            "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+            "$ref": "#/definitions/data"
         },
         "dtprojfimapi": {
             "required": false,
             "type": ["string","null"],
-            "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+            "$ref": "#/definitions/data"
         },
         "nrproctrab": {
             "required": true,

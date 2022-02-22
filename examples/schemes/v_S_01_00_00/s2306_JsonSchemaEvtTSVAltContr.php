@@ -24,8 +24,8 @@ $jsonSchema = '{
     "type": "object",
     "properties": {
         "sequencial": {
-            "required": true,
-            "type": "integer",
+            "required": false,
+            "type": ["integer","null"],
             "minimum": 1,
             "maximum": 99999
         },
@@ -55,8 +55,8 @@ $jsonSchema = '{
                     "pattern": "^.{1,30}$"
                 },
                 "codcateg": {
-                    "required": true,
-                    "type": "string",
+                    "required": false,
+                    "type": ["string","null"],
                     "pattern": "^[0-9]{3}$"
                 }
             }
@@ -239,7 +239,7 @@ $jsonSchema = '{
                         "uf": {
                             "required": false,
                             "type": "string",
-                            "pattern": "^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$"
+                            "$ref": "#/definitions/siglauf"
                         }
                     }
                 },

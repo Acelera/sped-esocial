@@ -8,33 +8,18 @@ use JsonSchema\Constraints\Factory;
 use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 
-//S-2299
-//Campo {cpfDep} – alterada validação da alínea a). ok
-//Campo {codSusp} – alteradas ocorrência e validação.ok
-//Grupo {ideADC} – inserido campo {dtEfAcConv} como chave.ok
-//Campos {ideEstabLot/tpInsc} – alterada validação.ok
-//Criado o grupo {observacoes}.pk
-//Criado o grupo {procCS} e respectivo campo.ok
-//Grupo {consigFGTS} – alteradas ocorrência e condição.ok
-//Campo {dtDeslig} – alterada validação.ok
-//Campo {qtdDiasInterm} – criado.ok
-//Campo {observacao} – alterados registro pai, ocorrência e descrição.ok
-//Campo {nrCertObito} – alterada validação.ok
-//Campo {idConsig} – excluído.ok
-//Campo {insConsig} – alterada ocorrência e excluída validação.ok
-//Campo {nrContr} – alterados ocorrência e tamanho e excluída validação.ok
-//Grupo {verbasResc} – alterada condição.
+//S-2299 versão inicial e-social simplificado v1.0.0
 
 $evento  = 'evtDeslig';
-$version = '02_05_00';
+$version = 'S_01_00_00';
 
 $jsonSchema = '{
     "title": "evtDeslig",
     "type": "object",
     "properties": {
         "sequencial": {
-            "required": true,
-            "type": "integer",
+            "required": false,
+            "type": ["integer","null"],
             "minimum": 1,
             "maximum": 99999
         },
@@ -47,14 +32,15 @@ $jsonSchema = '{
         "nrrecibo": {
             "required": false,
             "type": ["string","null"],
-            "maxLength": 40
+            "$ref": "#/definitions/recibo"
+        },
+        "indguia": {
+            "required": false,
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "maximum": 1
         },
         "cpftrab": {
-            "required": true,
-            "type": "string",
-            "pattern": "^[0-9]{11}$"
-        },
-        "nistrab": {
             "required": true,
             "type": "string",
             "pattern": "^[0-9]{11}$"
@@ -72,7 +58,12 @@ $jsonSchema = '{
         "dtdeslig": {
             "required": true,
             "type": "string",
-            "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+            "$ref": "#/definitions/data"
+        },
+        "dtavprv": {
+            "required": false,
+            "type": ["string","null"],
+            "$ref": "#/definitions/data"
         },
         "indpagtoapi": {
             "required": true,
@@ -82,11 +73,11 @@ $jsonSchema = '{
         "dtprojfimapi": {
             "required": false,
             "type": ["string","null"],
-            "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+            "$ref": "#/definitions/data"
         },
         "pensalim": {
-            "required": true,
-            "type": "integer",
+            "required": false,
+            "type": ["integer","null"],
             "minimum": 0,
             "maximum": 3
         },
@@ -98,27 +89,27 @@ $jsonSchema = '{
             "required": false,
             "type": ["number","null"]
         },
-        "nrcertobito": {
-            "required": false,
-            "type": ["string","null"],
-            "pattern": "^[0-9]{32}$"
-        },
         "nrproctrab": {
             "required": false,
             "type": ["string","null"],
             "pattern": "^.{20}$"
         },
-        "indcumprparc": {
-            "required": true,
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 4
-        },
-        "qtddiasinterm": {
+        "infoInterm": {
             "required": false,
-            "type": ["integer","null"],
-            "minimum": 0,
-            "maximum": 31
+            "type": ["array", "null"],
+            "minItems": 0,
+            "maxItems": 31,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "dia": {
+                        "required": true,
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 31
+                    }
+                }
+            }
         },
         "observacoes": {
             "required": false,
@@ -140,13 +131,13 @@ $jsonSchema = '{
             "required": false,
             "type": ["object","null"],
             "properties": {
-                "tpinscsuc": {
+                "tpinsc": {
                     "required": true,
                     "type": "integer",
                     "minimum": 1,
                     "maximum": 2
                 },
-                "cnpjsucessora": {
+                "nrinsc": {
                     "required": true,
                     "type": "string",
                     "pattern": "^[0-9]{14}$"
@@ -165,7 +156,7 @@ $jsonSchema = '{
                 "dtnascto": {
                     "required": true,
                     "type": "string",
-                    "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+                    "$ref": "#/definitions/data"
                 }
             }
         },
@@ -211,18 +202,18 @@ $jsonSchema = '{
                                             "properties": {
                                                 "tpinsc": {
                                                     "required": true,
-                                                    "type": "integer",
-                                                    "minimum": 1,
-                                                    "maximum": 4
+                                                    "type": "string",
+                                                    "pattern": "^(1|3|4)$"
                                                 },
                                                 "nrinsc": {
                                                     "required": true,
                                                     "type": "string",
-                                                    "pattern": "^[0-9]{8,14}"
+                                                    "pattern": "^[0-9]{12}|[0-9]{14}$"
                                                 },
                                                 "codlotacao": {
                                                     "required": true,
                                                     "type": "string",
+                                                    "minLength": 1,
                                                     "maxLength": 30
                                                 },
                                                 "detverbas": {
@@ -236,11 +227,13 @@ $jsonSchema = '{
                                                             "codrubr": {
                                                                 "required": true,
                                                                 "type": "string",
+                                                                "minLength": 1,
                                                                 "maxLength": 30
                                                             },
                                                             "idetabrubr": {
                                                                 "required": true,
                                                                 "type": "string",
+                                                                "minLength": 1,
                                                                 "maxLength": 8
                                                             },
                                                             "qtdrubr": {
@@ -251,80 +244,15 @@ $jsonSchema = '{
                                                                 "required": false,
                                                                 "type": ["number","null"]
                                                             },
-                                                            "vrunit": {
-                                                                "required": false,
-                                                                "type": ["number","null"]
-                                                            },
                                                             "vrrubr": {
                                                                 "required": true,
                                                                 "type": "number"
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "infosaudecolet": {
-                                                    "required": false,
-                                                    "type": ["object","null"],
-                                                    "properties": {
-                                                        "detoper": {
-                                                            "required": true,
-                                                            "type": "array",
-                                                            "minItems": 1,
-                                                            "maxItems": 99,
-                                                            "items": {
-                                                                "required": true,
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "cnpjoper": {
-                                                                        "required": true,
-                                                                        "type": "string",
-                                                                        "pattern": "^[0-9]{14}"
-                                                                    },
-                                                                    "regans": {
-                                                                        "required": true,
-                                                                        "type": "string",
-                                                                        "maxLength": 6
-                                                                    },
-                                                                    "vrpgtit": {
-                                                                        "required": true,
-                                                                        "type": "number"
-                                                                    },
-                                                                    "detplano": {
-                                                                        "required": false,
-                                                                        "type": ["array","null"],
-                                                                        "minItems": 0,
-                                                                        "maxItems": 99,
-                                                                        "items": {
-                                                                            "type": "object",
-                                                                            "properties": {
-                                                                                "tpdep": {
-                                                                                    "required": true,
-                                                                                    "type": "string",
-                                                                                    "pattern": "^[0-9]{2}$"
-                                                                                },
-                                                                                "cpfdep": {
-                                                                                    "required": false,
-                                                                                    "type": ["string","null"],
-                                                                                    "pattern": "^[0-9]{11}$"
-                                                                                },
-                                                                                "nmdep": {
-                                                                                    "required": true,
-                                                                                    "type": "string",
-                                                                                    "maxLength": 70
-                                                                                },
-                                                                                "dtnascto": {
-                                                                                    "required": true,
-                                                                                    "type": "string",
-                                                                                    "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
-                                                                                },
-                                                                                "vlrpgdep": {
-                                                                                    "required": true,
-                                                                                    "type": "number"
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
+                                                            },
+                                                            "indapurir": {
+                                                                "required": false,
+                                                                "type": ["integer","null"],
+                                                                "minimum": 0,
+                                                                "maximum": 1
                                                             }
                                                         }
                                                     }
@@ -373,22 +301,12 @@ $jsonSchema = '{
                                                 "dtacconv": {
                                                     "required": true,
                                                     "type": "string",
-                                                    "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+                                                    "$ref": "#/definitions/data"
                                                 },
                                                 "tpacconv": {
                                                     "required": true,
                                                     "type": "string",
-                                                    "pattern": "^(A|B|C|D|E)$"
-                                                },
-                                                "compacconv": {
-                                                    "required": false,
-                                                    "type": ["string","null"],
-                                                    "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])$"
-                                                },
-                                                "dtefacconv": {
-                                                    "required": false,
-                                                    "type": ["string","null"],
-                                                    "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+                                                    "pattern": "^(A|B|C|D|E|G|H)$"
                                                 },
                                                 "dsc": {
                                                     "required": true,
@@ -406,7 +324,7 @@ $jsonSchema = '{
                                                             "perref": {
                                                                 "required": true,
                                                                 "type": "string",
-                                                                "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])$"
+                                                                "$ref": "#/definitions/periodo"
                                                             },
                                                             "ideestablot": {
                                                                 "required": true,
@@ -418,9 +336,8 @@ $jsonSchema = '{
                                                                     "properties": {
                                                                         "tpinsc": {
                                                                             "required": true,
-                                                                            "type": "integer",
-                                                                            "minimum": 1,
-                                                                            "maximum": 4
+                                                                            "type": "string",
+                                                                            "pattern": "^(1|3|4)$"
                                                                         },
                                                                         "nrinsc": {
                                                                             "required": true,
@@ -458,13 +375,15 @@ $jsonSchema = '{
                                                                                         "required": false,
                                                                                         "type": ["number","null"]
                                                                                     },
-                                                                                    "vrunit": {
-                                                                                        "required": false,
-                                                                                        "type": ["number","null"]
-                                                                                    },
                                                                                     "vrrubr": {
                                                                                         "required": true,
                                                                                         "type": "number"
+                                                                                    },
+                                                                                    "indapurir": {
+                                                                                        "required": false,
+                                                                                        "type": ["integer","null"],
+                                                                                        "minimum": 0,
+                                                                                        "maximum": 1
                                                                                     }
                                                                                 }
                                                                             }
@@ -503,22 +422,6 @@ $jsonSchema = '{
                                         }
                                     }
                                 }
-                            },
-                            "infotrabinterm": {
-                                "required": false,
-                                "type": ["array","null"],
-                                "minItems": 0,
-                                "maxItems": 99,
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "codconv": {
-                                            "required": true,
-                                            "type": "string",
-                                            "maxLength": 30
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
@@ -535,7 +438,7 @@ $jsonSchema = '{
                                 "required": true,
                                 "type": "integer",
                                 "minimum": 1,
-                                "maximum": 4
+                                "maximum": 2
                             },
                             "nrprocjud": {
                                 "required": true,
@@ -543,8 +446,8 @@ $jsonSchema = '{
                                 "pattern": "^.{20}$"
                             },
                             "codsusp": {
-                                "required": false,
-                                "type": ["string","null"],
+                                "required": true,
+                                "type": "string",
                                 "pattern": "^[0-9]{1,14}$"
                             }
                         }
@@ -613,7 +516,7 @@ $jsonSchema = '{
                 "dtfimquar": {
                     "required": true,
                     "type": "string",
-                    "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+                    "$ref": "#/definitions/data"
                 }
             }
         },
@@ -621,7 +524,7 @@ $jsonSchema = '{
             "required": false,
             "type": ["array","null"],
             "minItems": 0,
-            "maxItems": 9,
+            "maxItems": 99,
             "items": {
                 "type": "object",
                 "properties": {
@@ -644,128 +547,153 @@ $jsonSchema = '{
 }';
 
 $std = new \stdClass();
-$std->sequencial = 1;
-$std->indretif = 1;
-$std->nrrecibo = 'ABJBAJBJAJBAÇÇAAKJ';
-$std->cpftrab = '99999999999';
-$std->nistrab = '11111111111';
-$std->matricula = '1234infomv56788-56478ABC';
-$std->mtvdeslig = '02';
-$std->dtdeslig = '2017-11-25';
-$std->indpagtoapi = 'S';
-$std->dtprojfimapi = '2017-11-25';
-$std->pensalim = 2;
-$std->percaliment = 22;
-$std->vralim = 1234.45;
-$std->nrcertobito = '12345678901234567890123456789012';
-$std->nrproctrab = '12345678901234567890';
-$std->indcumprparc = 2;
-$std->qtddiasinterm = 12;
+//$std->sequencial = 1; //Opcional
+$std->indretif = 1; //Obrigatório
+$std->nrrecibo = '1.1.1234567890123456789'; //Obrigatório caso indretif = 2
+$std->indguia = 1; //Opcional
+$std->cpftrab = '99999999999'; //Obrigatório
+$std->matricula = '1234infomv56788-56478ABC'; //Obrigatório
+$std->mtvdeslig = '02'; //Obrigatório
+$std->dtdeslig = '2017-11-25'; //Obrigatório
+$std->dtavprv = '2017-11-25'; //Opcional
+$std->indpagtoapi = 'S'; //Obrigatório
+$std->dtprojfimapi = '2017-11-25'; //Opcional
+$std->pensalim = 2; //Opcional
+$std->percaliment = 22; //Opcional
+$std->vralim = 1234.45; //Opcional
+$std->nrproctrab = '12345678901234567890'; //Opcional
 
-$std->observacoes[0] = new \stdClass();
-$std->observacoes[0]->observacao = 'observacao';
+//Informações relativas ao trabalho intermitente.
+$std->infoInterm[0] = new \stdClass(); //Opcional
+$std->infoInterm[0]->dia = 12; //Obrigatório
 
-$std->sucessaovinc = new \stdClass();
-$std->sucessaovinc->tpinscsuc = 1;
-$std->sucessaovinc->cnpjsucessora = '12345678901234';
+//Observações sobre o desligamento.
+$std->observacoes[0] = new \stdClass(); //Opcional
+$std->observacoes[0]->observacao = 'observacao'; //Obrigatório
 
-$std->transftit = new \stdClass();
-$std->transftit->cpfsubstituto = '12345678901';
-$std->transftit->dtnascto = '1969-10-04';
+//Grupo preenchido exclusivamente nos casos de sucessão do vínculo trabalhista, 
+//com a identificação da empresa sucessora.
+$std->sucessaovinc = new \stdClass(); //Opcional
+$std->sucessaovinc->tpinsc = 1; //Obrigatório
+$std->sucessaovinc->nrinsc = '12345678901234'; //Obrigatório
 
-$std->mudancacpf = new \stdClass();
-$std->mudancacpf->novocpf = '12345678901';
+//Transferência de titularidade do empregado doméstico
+//para outro representante da mesma unidade familiar.
+$std->transftit = new \stdClass(); //Opcional
+$std->transftit->cpfsubstituto = '12345678901'; //Obrigatório
+$std->transftit->dtnascto = '1969-10-04'; //Obrigatório
 
-$std->verbasresc = new \stdClass();
-$std->verbasresc->dmdev[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->idedmdev = 'akakakak737477382828282828282';
-$std->verbasresc->dmdev[1]->infoperapur = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->tpinsc = 1;
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->nrinsc = '12345678901234';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->codlotacao = 'asdfg';
+//Informação do novo CPF do trabalhador.
+$std->mudancacpf = new \stdClass(); //Opcional
+$std->mudancacpf->novocpf = '12345678901'; //Obrigatório
 
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->codrubr = 'lslslslslslslslslslslsl';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->idetabrubr = '12345678';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->qtdrubr = 25.45;
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->fatorrubr = 1.56;
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->vrunit = 20.15;
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->vrrubr = 200.56;
+//Grupo onde são prestadas as informações relativas às
+//verbas devidas ao trabalhador na rescisão contratual.
+$std->verbasresc = new \stdClass(); //Opcional
 
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->cnpjoper = '12345678901234';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->regans = '123456';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->vrpgtit = 986.49;
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->detplano[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->detplano[1]->tpdep = '01';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->detplano[1]->cpfdep = '12345678901';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->detplano[1]->nmdep = 'Fulano de Tal';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->detplano[1]->dtnascto = '2005-06-05';
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosaudecolet->detoper[1]->detplano[1]->vlrpgdep = 199.41;
+//Identificação de cada um dos demonstrativos de valores devidos ao trabalhador
+$std->verbasresc->dmdev[1] = new \stdClass();  //Obrigatório
+$std->verbasresc->dmdev[1]->idedmdev = 'akakakak737477382828282828282';  //Obrigatório
 
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infoagnocivo = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infoagnocivo->grauexp = 2;
+//Verbas rescisórias relativas ao mês/ano da data do desligamento.
+$std->verbasresc->dmdev[1]->infoperapur = new \stdClass(); //Opcional
 
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosimples = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosimples->indsimples = 1;
+//Identificação do estabelecimento e da lotação
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1] = new \stdClass(); //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->tpinsc = "3"; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->nrinsc = '12345678901234'; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->codlotacao = 'asdfg'; //Obrigatório
 
-$std->verbasresc->dmdev[1]->infoperant = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->dtacconv = '2017-04-02';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->tpacconv = 'A';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->compacconv = '2017-04';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->dtefacconv = '2017-06-02';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->dsc = 'kksksks k skjskjskjs sk';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->perref = '2017-01';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->tpinsc = 1;
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->nrinsc = '12345678901234';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->codlotacao = 'asdfg';
+//Detalhamento das verbas rescisórias devidas ao trabalhador
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1] = new \stdClass(); //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->codrubr = 'lslslslslslslslslslslsl'; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->idetabrubr = '12345678'; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->qtdrubr = 25.45; //Opcional
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->fatorrubr = 1.56; //Opcional
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->vrrubr = 200.56; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->detverbas[1]->indapurir = 0; //Opcional
 
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->codrubr = 'lslslslslslslslslslslsl';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->idetabrubr = '12345678';
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->qtdrubr = 25.45;
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->fatorrubr = 1.56;
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->vrunit = 20.15;
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->vrrubr = 200.56;
+//Grupo referente ao detalhamento do grau de exposição do trabalhador aos agentes nocivos
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infoagnocivo = new \stdClass(); //Opcional
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infoagnocivo->grauexp = 2; //Obrigatório
 
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infoagnocivo = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infoagnocivo->grauexp = 2;
+//Informação relativa a empresas enquadradas no regime de tributação Simples Nacional
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosimples = new \stdClass(); //Opcional
+$std->verbasresc->dmdev[1]->infoperapur->ideestablot[1]->infosimples->indsimples = 1; //Obrigatório
 
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infosimples = new \stdClass();
-$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infosimples->indsimples = 1;
+//Remuneração relativa a períodos anteriores, devida em função de acordos coletivos, legislação específica,
+//convenção coletiva de trabalho, dissídio ou conversão de licença saúde em acidente de trabalho
+$std->verbasresc->dmdev[1]->infoperant = new \stdClass(); //Opcional
 
-$std->verbasresc->dmdev[1]->infotrabinterm[1] = new \stdClass();
-$std->verbasresc->dmdev[1]->infotrabinterm[1]->codconv = 'ksksksksksk';
+//Identificação do instrumento ou situação ensejadora da remuneração relativa a períodos de apuração anteriores.
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1] = new \stdClass(); //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->dtacconv = '2017-04-02'; //Opcional
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->tpacconv = 'A';  //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->dsc = 'kksksks k skjskjskjs sk';  //Obrigatório
 
-$std->verbasresc->procjudtrab[1] = new \stdClass();
-$std->verbasresc->procjudtrab[1]->tptrib = 3;
-$std->verbasresc->procjudtrab[1]->nrprocjud = '12345678901234567890';
-$std->verbasresc->procjudtrab[1]->codsusp = '12345678901234';
+//Identificação do período ao qual se referem as diferenças de remuneração.
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1] = new \stdClass(); //Obrigatório 
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->perref = '2017-01'; //Obrigatório
 
-$std->verbasresc->infomv = new \stdClass();
-$std->verbasresc->infomv->indmv = 2;
+//Identificação do estabelecimento e da lotação
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1] = new \stdClass(); //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->tpinsc = "1"; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->nrinsc = '12345678901234'; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->codlotacao = 'asdfg'; //Obrigatório
 
-$std->verbasresc->infomv->remunoutrempr[1] = new \stdClass();
-$std->verbasresc->infomv->remunoutrempr[1]->tpinsc = 1;
-$std->verbasresc->infomv->remunoutrempr[1]->nrinsc = '12345678901234';
-$std->verbasresc->infomv->remunoutrempr[1]->codcateg = '001';
-$std->verbasresc->infomv->remunoutrempr[1]->vlrremunoe = 2535.97;
+//Detalhamento das verbas rescisórias devidas ao trabalhador
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1] = new \stdClass(); //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->codrubr = 'lslslslslslslslslslslsl'; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->idetabrubr = '12345678'; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->qtdrubr = 25.45; //Opcional
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->fatorrubr = 1.56; //Opcional
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->vrrubr = 200.56; //Obrigatório
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->detverbas[1]->indapurir = 0; //Opcional
 
-$std->verbasresc->proccs = new \stdClass();
-$std->verbasresc->proccs->nrprocjud = '12345678901234567890';
- 
-$std->quarentena = new \stdClass();
-$std->quarentena->dtfimquar = '2018-12-20';
-         
-$std->consigfgts[0] = new \stdClass();
-$std->consigfgts[0]->insconsig = '12345';
-$std->consigfgts[0]->nrcontr = '123456789012345';
+//Grupo referente ao detalhamento do grau de exposição do trabalhador aos agentes nocivos
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infoagnocivo = new \stdClass(); //Opcional
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infoagnocivo->grauexp = 2; //Obrigatório
 
+//Informação relativa a empresas enquadradas no regime de tributação Simples Nacional
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infosimples = new \stdClass(); //Opcional
+$std->verbasresc->dmdev[1]->infoperant->ideadc[1]->ideperiodo[1]->ideestablot[1]->infosimples->indsimples = 1; //Obrigatório
+
+//Informações sobre a existência de processos judiciais do trabalhador com decisão favorável quanto à não incidência
+//de contribuições sociais e/ou Imposto de Renda.
+$std->verbasresc->procjudtrab[1] = new \stdClass(); //Opcional
+$std->verbasresc->procjudtrab[1]->tptrib = 2; //Obrigatório
+$std->verbasresc->procjudtrab[1]->nrprocjud = '12345678901234567890'; //Obrigatório
+$std->verbasresc->procjudtrab[1]->codsusp = '12345678901234'; //Obrigatório
+
+//Grupo preenchido exclusivamente em caso de trabalhador que possua outros vínculos/atividades nos quais já tenha
+//ocorrido desconto de contribuição previdenciária. 
+$std->verbasresc->infomv = new \stdClass(); //Opcional
+$std->verbasresc->infomv->indmv = 2; //Obrigatório
+
+//Informações relativas ao trabalhador que possui vínculo
+//empregatício com outra(s) empresa(s) e/ou que exerce
+//outras atividades como contribuinte individual, detalhando
+$std->verbasresc->infomv->remunoutrempr[1] = new \stdClass(); //Obrigatório
+$std->verbasresc->infomv->remunoutrempr[1]->tpinsc = 1; //Obrigatório
+$std->verbasresc->infomv->remunoutrempr[1]->nrinsc = '12345678901234'; //Obrigatório
+$std->verbasresc->infomv->remunoutrempr[1]->codcateg = '001'; //Obrigatório
+$std->verbasresc->infomv->remunoutrempr[1]->vlrremunoe = 2535.97; //Obrigatório
+
+//Informação sobre processo judicial que suspende a
+//exigibilidade da Contribuição Social Rescisória
+$std->verbasresc->proccs = new \stdClass(); //OPcional
+$std->verbasresc->proccs->nrprocjud = '12345678901234567890'; //Obrigatório
+
+//Informações sobre a "quarentena" remunerada de
+//trabalhador desligado ou outra situação de desligamento
+//com data anterior.
+$std->quarentena = new \stdClass(); //Opcional
+$std->quarentena->dtfimquar = '2018-12-20'; //Obrigatório
+
+//Informações sobre operação de crédito consignado com garantia de FGTS.
+$std->consigfgts[0] = new \stdClass(); //Opcional
+$std->consigfgts[0]->insconsig = '12345'; //Obrigatório
+$std->consigfgts[0]->nrcontr = '123456789012345'; //Obrigatório
 
 // Schema must be decoded before it can be used for validation
 $jsonSchemaObject = json_decode($jsonSchema);

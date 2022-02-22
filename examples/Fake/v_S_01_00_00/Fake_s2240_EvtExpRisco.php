@@ -29,9 +29,9 @@ $config = [
 $configJson = json_encode($config, JSON_PRETTY_PRINT);
 
 $std = new \stdClass();
-$std->sequencial = 1;
+//$std->sequencial = 1;
 $std->indretif = 1;
-$std->nrrecibo = null;
+$std->nrrecibo = "1.7.1234567890123456789";
 $std->cpftrab = '12345678901';
 $std->matricula = '002zcbv';
 $std->codcateg = '111';
@@ -60,17 +60,19 @@ $std->agnoc[0]->epcepi->eficepc = 'S';
 $std->agnoc[0]->epcepi->utilizepi = 1; //0 - Não se aplica; 1 - Não utilizado; 2 - Utilizado
 $std->agnoc[0]->epcepi->eficepi = 'S';
 
+$std->agnoc[0]->epcepi->epicompl = new \stdClass();
+$std->agnoc[0]->epcepi->epicompl->medprotecao = 'S';
+$std->agnoc[0]->epcepi->epicompl->condfuncto = 'S';
+$std->agnoc[0]->epcepi->epicompl->usoinint = 'S';
+$std->agnoc[0]->epcepi->epicompl->przvalid = 'S';
+$std->agnoc[0]->epcepi->epicompl->periodictroca = 'S';
+$std->agnoc[0]->epcepi->epicompl->higienizacao = 'S';
 
-$std->agnoc[0]->epcepi->epiCompl->medprotecao = 'S';
-$std->agnoc[0]->epcepi->epiCompl->condfuncto = 'S';
-$std->agnoc[0]->epcepi->epiCompl->usoinint = 'S';
-$std->agnoc[0]->epcepi->epiCompl->przvalid = 'S';
-$std->agnoc[0]->epcepi->epiCompl->periodictroca = 'S';
-$std->agnoc[0]->epcepi->epiCompl->higienizacao = 'S';
-
+// ou docacal (número do CA) ou descepi deve ser fornecido,
+// os dois juntos gera rejeição 
 $std->agnoc[0]->epcepi->epi[0] = new \stdClass();
-$std->agnoc[0]->epcepi->epi[0]->docaval = '111xxx';
-$std->agnoc[0]->epcepi->epi[0]->dscePI = 'macacao';
+//$std->agnoc[0]->epcepi->epi[0]->docaval = '111xxx';
+$std->agnoc[0]->epcepi->epi[0]->dscepi = 'macacao';
 
 $std->respreg[0] = new \stdClass();
 $std->respreg[0]->cpfresp = '12345678901';

@@ -29,14 +29,14 @@ $config = [
 $configJson = json_encode($config, JSON_PRETTY_PRINT);
 
 $std = new \stdClass();
-$std->sequencial = 1;
+//$std->sequencial = 1;
 $std->indretif = 2;
 $std->nrrecibo = '1.1.1234567890123456789';
 
 $std->trabsemvinculo = new \stdClass();
 $std->trabsemvinculo->cpftrab = '11111111111';
 $std->trabsemvinculo->matricula = 'ABC11111111111';
-$std->trabsemvinculo->codcateg = '101';
+$std->trabsemvinculo->codcateg = '101'; //Opcional
 
 $std->tsvalteracao = new \stdClass();
 $std->tsvalteracao->dtalteracao = '2017-08-25';

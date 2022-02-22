@@ -54,8 +54,8 @@ trait TraitS2220
         $this->dom->addChild(
             $ideVinculo,
             "nisTrab",
-            $this->std->idevinculo->nistrab,
-            true
+            !empty($this->std->idevinculo->nistrab) ? $this->std->idevinculo->nistrab : null,
+            false
         );
         $this->dom->addChild(
             $ideVinculo,
@@ -109,8 +109,8 @@ trait TraitS2220
                     $this->dom->addChild(
                         $exame,
                         "ordExame",
-                        $exa->ordexame,
-                        true
+                        !empty($exa->ordexame) ? $exa->ordexame : null,
+                        false
                     );
                     $this->dom->addChild(
                         $exame,
@@ -255,8 +255,8 @@ trait TraitS2220
             $this->dom->addChild(
                 $exame,
                 "ordExame",
-                $exa->ordexame,
-                true
+                !empty($exa->ordexame) ? $exa->ordexame : null,
+                false
             );
             $this->dom->addChild(
                 $exame,
@@ -302,36 +302,38 @@ trait TraitS2220
         $aso->appendChild($medico);
         $exMedOcup->appendChild($aso);
 
-        $stdmon = $this->std->exmedocup->respmonit;
-        $monit = $this->dom->createElement("respMonit");
-        $this->dom->addChild(
-            $monit,
-            "cpfResp",
-            !empty($stdmon->cpfresp) ? $stdmon->cpfresp : null,
-            false
-        );
-        $this->dom->addChild(
-            $monit,
-            "nmResp",
-            $stdmon->nmresp,
-            true
-        );
-        $this->dom->addChild(
-            $monit,
-            "nrCRM",
-            $stdmon->nrcrm,
-            true
-        );
-        $this->dom->addChild(
-            $monit,
-            "ufCRM",
-            $stdmon->ufcrm,
-            true
-        );
-        $exMedOcup->appendChild($monit);
+        if (!empty($this->std->exmedocup->respmonit)) {
+            $stdmon = $this->std->exmedocup->respmonit;
+            $monit = $this->dom->createElement("respMonit");
+            $this->dom->addChild(
+                $monit,
+                "cpfResp",
+                !empty($stdmon->cpfresp) ? $stdmon->cpfresp : null,
+                false
+            );
+            $this->dom->addChild(
+                $monit,
+                "nmResp",
+                $stdmon->nmresp,
+                true
+            );
+            $this->dom->addChild(
+                $monit,
+                "nrCRM",
+                $stdmon->nrcrm,
+                true
+            );
+            $this->dom->addChild(
+                $monit,
+                "ufCRM",
+                $stdmon->ufcrm,
+                true
+            );
+            $exMedOcup->appendChild($monit);
+        }
         $this->node->appendChild($exMedOcup);
     }
-
+    
     /**
      * builder for version S.1.0.0
      */
@@ -385,8 +387,14 @@ trait TraitS2220
             !empty($this->std->idevinculo->matricula) ? $this->std->idevinculo->matricula : null,
             false
         );
+        $this->dom->addChild(
+            $ideVinculo,
+            "codCateg",
+            !empty($this->std->idevinculo->codcateg) ? $this->std->idevinculo->codcateg : null,
+            false
+        );
         $this->node->appendChild($ideVinculo);
-
+        
         $exMedOcup = $this->dom->createElement("exMedOcup");
         $this->dom->addChild(
             $exMedOcup,
@@ -432,8 +440,8 @@ trait TraitS2220
             $this->dom->addChild(
                 $exame,
                 "ordExame",
-                $exa->ordexame,
-                true
+                !empty($exa->ordexame) ? $exa->ordexame : null,
+                false
             );
             $this->dom->addChild(
                 $exame,
@@ -467,38 +475,40 @@ trait TraitS2220
         $aso->appendChild($medico);
         $exMedOcup->appendChild($aso);
 
-        $stdmon = $this->std->exmedocup->respmonit;
-        $monit = $this->dom->createElement("respMonit");
-        $this->dom->addChild(
-            $monit,
-            "cpfResp",
-            !empty($stdmon->cpfresp) ? $stdmon->cpfresp : null,
-            false
-        );
-        $this->dom->addChild(
-            $monit,
-            "nmResp",
-            $stdmon->nmresp,
-            true
-        );
-        $this->dom->addChild(
-            $monit,
-            "nrCRM",
-            $stdmon->nrcrm,
-            true
-        );
-        $this->dom->addChild(
-            $monit,
-            "ufCRM",
-            $stdmon->ufcrm,
-            true
-        );
-        $exMedOcup->appendChild($monit);
+        if (!empty($this->std->exmedocup->respmonit)) {
+            $stdmon = $this->std->exmedocup->respmonit;
+            $monit = $this->dom->createElement("respMonit");
+            $this->dom->addChild(
+                $monit,
+                "cpfResp",
+                !empty($stdmon->cpfresp) ? $stdmon->cpfresp : null,
+                false
+            );
+            $this->dom->addChild(
+                $monit,
+                "nmResp",
+                $stdmon->nmresp,
+                true
+            );
+            $this->dom->addChild(
+                $monit,
+                "nrCRM",
+                $stdmon->nrcrm,
+                true
+            );
+            $this->dom->addChild(
+                $monit,
+                "ufCRM",
+                $stdmon->ufcrm,
+                true
+            );
+            $exMedOcup->appendChild($monit);
+        }
         $this->node->appendChild($exMedOcup);
-
+        
         //finalização do xml
         $this->eSocial->appendChild($this->node);
-
+        
         //$this->xml = $this->dom->saveXML($this->eSocial);
         $this->sign();
     }

@@ -3,8 +3,8 @@
     "type": "object",
     "properties": {
         "sequencial": {
-            "required": true,
-            "type": "integer",
+            "required": false,
+            "type": ["integer","null"],
             "minimum": 1,
             "maximum": 99999
         },
@@ -139,12 +139,12 @@
                             },
                             "eficepi": {
                                 "required": false,
-                                "type": "string",
+                                "type": ["string", "null"],
                                 "pattern": "^(S|N)$"
                             },
-                            "epiCompl": {
+                            "epicompl": {
                                 "required": false,
-                                "type": ["string","null"],
+                                "type": ["object","null"],
                                 "properties": {
                                     "medprotecao": {
                                         "required": true,

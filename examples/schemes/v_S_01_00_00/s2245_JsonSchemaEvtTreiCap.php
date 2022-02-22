@@ -12,7 +12,7 @@ use JsonSchema\Validator;
 //S-2245 2.5.0
 
 $evento = 'evtTreiCap';
-$version = '02_05_00';
+$version = 'S_01_00_00';
 
 $jsonSchema = '{
     "title": "evtTreiCap",
@@ -32,7 +32,8 @@ $jsonSchema = '{
         },
         "nrrecibo": {
             "required": false,
-            "type": ["string","null"]
+            "type": ["string","null"],
+            "$ref": "#/definitions/recibo"
         },
         "idevinculo": {
             "required": true,
@@ -81,7 +82,7 @@ $jsonSchema = '{
                         "dttreicap": {
                             "required": true,
                             "type": "string",
-                            "pattern": "^(19[0-9][0-9]|2[0-9][0-9][0-9])[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$"
+                            "$ref": "#/definitions/data"
                         },
                         "durtreicap": {
                             "required": true,
