@@ -1,7 +1,7 @@
 ![image](https://cdn2.hubspot.net/hubfs/3802133/ESOCIAL-2.png)
 
 # e-Social
-**API PHP para a integração de aplicativo com o projeto [SPED eSocial](http://www.esocial.gov.br/) do Ministério do Trabalho, Receita Federal e Caixa Economica Federal**
+**Biblioteca PHP para a integração de aplicativo com o projeto [SPED eSocial](http://www.esocial.gov.br/) do Ministério do Trabalho, Receita Federal e Caixa Economica Federal**
 
 *sped-esocial* é um framework que permite a integração de um aplicativo, com os serviços do projeto do MT denominado *eSocial*, com a construção dos eventos em xml e do envio dos lotes de eventos e consultas, através de requisições SOAP, sobre SSL usando certificado digital modelo A1 (PKCS#12), pertencentes a cadeia de certificação Brasileira.
 
@@ -9,7 +9,7 @@
 
 [VIDE NOTA ORIENTATIVA](https://www.gov.br/esocial/pt-br/documentacao-tecnica/manuais/nota-orientativa-s-1-0-01-2021.pdf)
 
-## Layout S-1.0 (a partir de 10/05/2021) - EM IMPLEMENTAÇÃO
+## Layout S-1.0 (a partir de 10/05/2021)
 
 ### *Esta API ainda está em fase de desenvolvimento, portanto faça TESTES antes de usar*
 
@@ -18,9 +18,7 @@
 [![Chat][ico-gitter]][link-gitter]
 
 [![Latest Stable Version][ico-stable]][link-packagist]
-[![Build Status][ico-travis]][link-travis]
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
-[![Quality Score][ico-code-quality]][link-code-quality]
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![License][ico-license]][link-packagist]
 [![Total Downloads][ico-downloads]][link-downloads]
