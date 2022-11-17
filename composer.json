@@ -1,8 +1,8 @@
 {
-    "name": "acelera/sped-esocial",
+    "name": "kanbom/sped-esocial",
     "type": "library",
     "description": "e-Social library",
-    "homepage": "https://github.com/acelera/sped-esocial",
+    "homepage": "https://github.com/kanbom/sped-esocial",
     "keywords": ["Sped", "eSocial", "Folha", "Empregados"],
     "license": ["LGPL-3.0-or-later", "GPL-3.0-or-later", "MIT"],
     "authors": [
@@ -20,7 +20,12 @@
             "name": "Ademilson Santana da Silva",
             "email": "ademilsonssilva1@gmail.com",
             "role": "Developer"
-        }
+        },
+	{
+            "name": "Marcus Yoda",
+            "email": "yoda@kanbom.com",
+            "role": "Developer"
+	}
     ],
     "require": {
         "php" : ">=7.0",

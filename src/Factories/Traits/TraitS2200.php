@@ -1848,12 +1848,14 @@ trait TraitS2200
                 ! empty($dur->clauassec) ? $dur->clauassec : null,
                 false
             );
-            $this->dom->addChild(
+            if((int)$dur->tpcontr == 3){
+                $this->dom->addChild(
                 $duracao,
                 "objDet",
                 ! empty($dur->objdet) ? $dur->objdet : null,
                 false
             );
+            }
             $contrato->appendChild($duracao);
         }
         //localTrabalho (obrigatorio)
@@ -1941,12 +1943,14 @@ trait TraitS2200
         if (isset($std->horcontratual)) {
             $hc = $std->horcontratual;
             $horContratual = $this->dom->createElement("horContratual");
-            $this->dom->addChild(
-                $horContratual,
-                "qtdHrsSem",
-                $hc->qtdhrssem,
-                true
-            );
+            if (! empty($hc->qtdhrssem)) {
+                $this->dom->addChild(
+                    $horContratual,
+                    "qtdHrsSem",
+                    $hc->qtdhrssem,
+                    true
+                );
+            }
             $this->dom->addChild(
                 $horContratual,
                 "tpJornada",

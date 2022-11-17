@@ -154,7 +154,7 @@ trait TraitS2206
             $this->dom->addChild(
                 $infoEstatutario,
                 "tpPlanRP",
-                $ct->tpPlanRP,
+                $ct->tpplanrp,
                 true
             );
             $infoRegimeTrab->appendChild($infoEstatutario);
@@ -552,13 +552,16 @@ trait TraitS2206
                 $infoCeletista->appendChild($aprend);
             }
             $infoRegimeTrab->appendChild($infoCeletista);
+
+            $vinculo->appendChild($infoRegimeTrab);
+
         } elseif (!empty($this->std->infoestatutario)) {
             $ct = $this->std->infoestatutario;
             $infoEstatutario = $this->dom->createElement("infoEstatutario");
             $this->dom->addChild(
                 $infoEstatutario,
                 "tpPlanRP",
-                $ct->tpPlanRP,
+                $ct->tpplanrp,
                 true
             );
             $this->dom->addChild(
@@ -574,8 +577,9 @@ trait TraitS2206
                 false
             );
             $infoRegimeTrab->appendChild($infoEstatutario);
+
+            $vinculo->appendChild($infoRegimeTrab);
         }
-        $vinculo->appendChild($infoRegimeTrab);
 
         $infoContrato = $this->dom->createElement("infoContrato");
         $ct = $this->std->infocontrato;
@@ -615,48 +619,50 @@ trait TraitS2206
             $ct->codcateg,
             true
         );
-        //remuneracao (obrigatorio)
-        $remuneracao = $this->dom->createElement("remuneracao");
-        $this->dom->addChild(
-            $remuneracao,
-            "vrSalFx",
-            $ct->vrsalfx,
-            true
-        );
-        $this->dom->addChild(
-            $remuneracao,
-            "undSalFixo",
-            $ct->undsalfixo,
-            true
-        );
-        $this->dom->addChild(
-            $remuneracao,
-            "dscSalVar",
-            ! empty($ct->dscsalvar) ? $ct->dscsalvar : null,
-            false
-        );
-        $infoContrato->appendChild($remuneracao);
-        //duracao (obrigatorio)
-        $duracao = $this->dom->createElement("duracao");
-        $this->dom->addChild(
-            $duracao,
-            "tpContr",
-            $ct->tpcontr,
-            true
-        );
-        $this->dom->addChild(
-            $duracao,
-            "dtTerm",
-            ! empty($ct->dtterm) ? $ct->dtterm : null,
-            false
-        );
-        $this->dom->addChild(
-            $duracao,
-            "objDet",
-            ! empty($ct->objdet) ? $ct->objdet : null,
-            false
-        );
-        $infoContrato->appendChild($duracao);
+        //remuneracao (obrigatorio) quando for celetista
+        if (!empty($this->std->infoceletista)) {
+            $remuneracao = $this->dom->createElement("remuneracao");
+            $this->dom->addChild(
+                $remuneracao,
+                "vrSalFx",
+                $ct->vrsalfx,
+                true
+            );
+            $this->dom->addChild(
+                $remuneracao,
+                "undSalFixo",
+                $ct->undsalfixo,
+                true
+            );
+            $this->dom->addChild(
+                $remuneracao,
+                "dscSalVar",
+                ! empty($ct->dscsalvar) ? $ct->dscsalvar : null,
+                false
+            );
+            $infoContrato->appendChild($remuneracao);
+            //duracao (obrigatorio) quando for celetista
+            $duracao = $this->dom->createElement("duracao");
+            $this->dom->addChild(
+                $duracao,
+                "tpContr",
+                $ct->tpcontr,
+                true
+            );
+            $this->dom->addChild(
+                $duracao,
+                "dtTerm",
+                ! empty($ct->dtterm) ? $ct->dtterm : null,
+                false
+            );
+            $this->dom->addChild(
+                $duracao,
+                "objDet",
+                ! empty($ct->objdet) ? $ct->objdet : null,
+                false
+            );
+            $infoContrato->appendChild($duracao);
+        }
         //localTrabalho (obrigatorio)
         $localTrabalho = $this->dom->createElement("localTrabalho");
         //localTrabGeral (opcional)
